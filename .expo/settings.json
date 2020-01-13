@@ -1,0 +1,8 @@
+{
+  "urlRandomness": "rm-uz6",
+  "hostType": "localhost",
+  "lanType": "ip",
+  "dev": true,
+  "minify": false,
+  "https": false
+}
