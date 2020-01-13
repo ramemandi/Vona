@@ -230,7 +230,7 @@ if (!TaskManager.isTaskDefined(LOCATION_TASK_NAME)) {
       }).then(response => response.json())
         .then(async (responseJson) => {
           // var prev_Alert = await AsyncStorage.getItem('alertType',(err)=>{console.log(err)});
-          console.log(responseJson, 'responseJson');
+          // console.log(responseJson, 'responseJson');
 
           // console.log(prev_Alert,'prevAlert');
           // console.log(responseJson.Item.thresholdMessage,'responseJson.Item.thresholdMessage');
