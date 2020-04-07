@@ -6,7 +6,7 @@ import {
   Image,
   TextInput,
   AsyncStorage, Platform, Alert, Linking, Dimensions, LayoutAnimation,
-  StatusBar, TouchableOpacity, Keyboard, KeyboardAvoidingView, 
+  StatusBar, TouchableOpacity, Keyboard, KeyboardAvoidingView,
 } from 'react-native';
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -21,7 +21,7 @@ import { apiCall } from '../components/FourQuarts.Service';
 import { isSignedIn } from './Auth';
 import { connect } from 'react-redux';
 import * as FileSystem from 'expo-file-system';
- 
+
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 10 : 8
 
 class Home extends React.Component {
@@ -38,8 +38,8 @@ class Home extends React.Component {
     requestedQr: false,
     qrValue: null,
     secureId: null,
-    type:"http://temp.com",
-    uri:null
+    type: "http://temp.com",
+    uri: null
   };
 
   constructor(props) {
@@ -76,7 +76,7 @@ class Home extends React.Component {
     let url = null;
     const { secureId } = this.state;
     await urlSelection(secureId).then(async (res) => {
-    console.log('url type', res)
+      console.log('url type', res)
       if (res) {
         url = res;
         await AsyncStorage.setItem('url', res);
@@ -85,53 +85,57 @@ class Home extends React.Component {
     }).catch((err) => { console.log(err) });
 
     if (this.state.secureId.length >= 6) {
-       let SelUrl = await AsyncStorage.getItem('url');
-      await apiCall(SelUrl+ Url.API.LOGIN + 'code=' + this.state.secureId, 'get', null).then(async(response) => {
-         console.log('working IN', response);
+      let SelUrl = await AsyncStorage.getItem('url');
+      await apiCall(SelUrl + Url.API.LOGIN + 'code=' + this.state.secureId, 'get', null).then(async (response) => {
+        console.log('working IN', response);
         if (response.Valid) {
-            // console.log(response,'LOGIN response')
+          // console.log(response,'LOGIN response')
           AsyncStorage.setItem('loginData', JSON.stringify(response), () => { });
           AsyncStorage.setItem('secureId', this.state.secureId, () => { });
           this.setState({
             errorMsg: false
           });
-         try {
-         await FileSystem.downloadAsync(
-          response.Item.agencyIconUrl,
-            FileSystem.documentDirectory + 'small.jpg'
-          ) .then(({ uri }) => {
-              // console.log('Finished downloading to ', uri);
-              iconTestPath=FileSystem.documentDirectory + 'small.jpg';
-              // console.log(iconTestPath);
-              // console.log({uri:iconTestPath});
-              this.setState({uri:iconTestPath});
-              // console.log(Boolean({iconTestPath}.exists));
-            })
-            .catch(error => {
-              console.error(error);
-          });
-        } catch (error) {
-          console.error(error);
-        }
-        this.props.navigation.navigate('Welcome', { icon: this.state.uri });
+          try {
+            if (response.Item.agencyIconUrl != null) {
+              await FileSystem.downloadAsync(
+                response.Item.agencyIconUrl,
+                FileSystem.documentDirectory + 'small.jpg'
+              ).then(({ uri }) => {
+                // console.log('Finished downloading to ', uri);
+                iconTestPath = FileSystem.documentDirectory + 'small.jpg';
+                this.setState({ uri: iconTestPath });
+                // console.log(Boolean({iconTestPath}.exists));
+              })
+                .catch(error => {
+                  console.error(error);
+                });
+            } else {
+              iconTestPath = '../assets/temp.png';
+              this.setState({ uri: iconTestPath });
+            }
+
+          } catch (error) {
+            console.error(error);
+          }
+          this.props.navigation.navigate('Welcome', { icon: this.state.uri });
           // this.props.navigation.dispatch(navigateAction)
         } else {
-     //     console.log('working');  
+          //     console.log('working');  
           this.setState({
             errorMsg: true,
           });
-        } 
+        }
       }).catch(error => {
         console.log(error);
       });
-     }
+    }
     else {
       this.setState({
         errorMsg: true,
       });
       alert('Please valid 6 digit');
     }
-  }; 
+  };
   renderMsg() {
     if (!this.state.errorMsg) {
       return (
@@ -157,23 +161,23 @@ class Home extends React.Component {
     }
   }
 
-  componentDidMount =async ()=>{  
+  componentDidMount = async () => {
     try {
       await isSignedIn().then((res) => {
-    //   console.log(res, 'dddddddd')
-       if(res){
-    //    console.log(res, 'dddddddd')
-         this.props.navigation.navigate("Active");
-       }       
-      }).catch((err) => { console.log(err,'custome error') })
+        //   console.log(res, 'dddddddd')
+        if (res) {
+          //    console.log(res, 'dddddddd')
+          this.props.navigation.navigate("Active");
+        }
+      }).catch((err) => { console.log(err, 'custome error') })
     } catch (error) {
       console.log(error)
     }
-        
+
   }
- 
+
   _requestCameraPermission = async () => {
-     const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
     // console.log(status, ' status');
     console.log(this.state.requestedQr, ' requestedQr ');
     this.setState({
@@ -258,14 +262,14 @@ class Home extends React.Component {
           </View>
         }
       </View>
-     );
+    );
   };
 
 
   render() {
     return (
       <View style={styles.container}>
-             <Image   source={require('../assets/tracktech1.png')} />
+        <Image source={require('../assets/tracktech1.png')} />
         <Text style={styles.paragraph}>
           {'\n'} ENTER YOUR SECURE CODE {'\n'}BELOW TO GET
           {'\n'}STARTED

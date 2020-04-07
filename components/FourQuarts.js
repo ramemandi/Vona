@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 // import { Constants, Location, Permissions, TaskManager } from 'expo';
 import * as Location from 'expo-location';
-import { NavigationActions    } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import * as Permissions from 'expo-permissions';
 import * as Constants from 'expo-constants';
 import { FontAwesome } from '@expo/vector-icons';
@@ -25,7 +25,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
 import store from '../components/store/index'
 import { Notifications } from 'expo';
- 
+
 class FourQuarts extends React.Component {
   static navigationOptions = {
     title: null,
@@ -49,8 +49,8 @@ class FourQuarts extends React.Component {
       safetyPlaces: null,
       agencyIcon: null,
       type: '',
-      height:null
-     
+      height: null
+
     };
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     // console.log(this.state.type ,'@50')
@@ -74,36 +74,36 @@ class FourQuarts extends React.Component {
     //   actions: [NavigationActions.navigate({ routeName: 'active' })],
     // });
     // this.props.navigation.dispatch(resetAction);
-     
+
     // this.props.navigation.replace('home')
 
 
     let SelUrl = await AsyncStorage.getItem('url');
-    this.setState({SelUrl:SelUrl})
+    this.setState({ SelUrl: SelUrl })
     this._notificationSubscription = Notifications.addListener(this._handleNotification);
     this.interval = setInterval(async () => {
       // let dd = store.getState().type;  
-      // console.log(dd,'store.getState().items;');
+
       // this.setState({type:dd})
       let Icon = await AsyncStorage.getItem('alertType');
       let update = JSON.parse(Icon);
-       let updateAlert = null;
-       let updateMessage = null;
-       if(update){
-        (update.alertType)?updateAlert = update.alertType:updateAlert = '';
-        (update.message)?updateMessage = update.message:updateMessage ='';
-       }
+      let updateAlert = null;
+      let updateMessage = null;
+      if (update) {
+        (update.alertType) ? updateAlert = update.alertType : updateAlert = '';
+        (update.message) ? updateMessage = update.message : updateMessage = '';
+      }
       this.updateThreatsIcon(updateAlert, updateMessage);
     }, 1000);
- 
+
     await Permissions.askAsync(Permissions.LOCATION);
     this.onCalled();
     this.getResourses_Types();
-    this.getAppData();  
+    this.getAppData();
   }
 
   _handleNotification = (notification) => {
-     console.log(notification, 'notification')
+    console.log(notification, 'notification')
     this.onCalled();
     this.getResourses_Types();
     this.getAppData();
@@ -120,7 +120,7 @@ class FourQuarts extends React.Component {
     }));
     try {
       let SelUrl = await AsyncStorage.getItem('url');
-       await apiCall(SelUrl+Url.API.LOGIN + 'code=' + CODE, 'get', null).then(async (response) => {
+      await apiCall(SelUrl + Url.API.LOGIN + 'code=' + CODE, 'get', null).then(async (response) => {
         // console.log('working IN', response);
         if (response.Valid) {
           AsyncStorage.setItem('loginData', JSON.stringify(response), () => { });
@@ -160,7 +160,9 @@ class FourQuarts extends React.Component {
     }
   };
   updateThreatsIcon(threatType, type) {
-    // console.log(threatType,'++++++++++++++++')
+    //console.log(threatType,'++++++++++++++++ 163');
+    //console.log(type,'++++++++++++++++ 164');
+
     switch (threatType) {
       case 'noActiveThreats': this.setState({ nothreats: true, attention: false, danger: false, type: type });
         break;
@@ -215,7 +217,7 @@ class FourQuarts extends React.Component {
   savePanic = async () => {
     let location = await Location.getCurrentPositionAsync({ accuracy: 5 });
     // console.log(location,'PANIC',)
-    
+
     // fetch('http://devapi.tracktechllc.com/tracktech/api/PMAccountProfile/LogVONAMemberStatus', {
     //   method: 'POST',
     //   headers: {
@@ -236,19 +238,19 @@ class FourQuarts extends React.Component {
     //   }),
     // }).then(response => response.json())
     let data = JSON.stringify({
-          VONAId: this.state.VONAId,
-          pmId: this.state.pmId,
-          VONAUserType: this.state.VONAUserType,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          accuracy: location.coords.accuracy,
-          heading: location.coords.heading,
-          altitude: location.coords.altitude,
-          speed: location.coords.speed,
-          status: 'PANIC'
-        })
-        let SelUrl = await AsyncStorage.getItem('url');
-    await apiCall(SelUrl+Url.API.PANIC,'post',data)
+      VONAId: this.state.VONAId,
+      pmId: this.state.pmId,
+      VONAUserType: this.state.VONAUserType,
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      accuracy: location.coords.accuracy,
+      heading: location.coords.heading,
+      altitude: location.coords.altitude,
+      speed: location.coords.speed,
+      status: 'PANIC'
+    })
+    let SelUrl = await AsyncStorage.getItem('url');
+    await apiCall(SelUrl + Url.API.PANIC, 'post', data)
       .then((responseJson) => {
         // console.log(responseJson, 'responseJson');
       })
@@ -260,6 +262,8 @@ class FourQuarts extends React.Component {
   }
 
   onCalled = async () => {
+    console.log('onCalled -263');
+
     let DD = null;
     DD = await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       timeInterval: 60000,
@@ -301,7 +305,7 @@ class FourQuarts extends React.Component {
     const value = await AsyncStorage.getItem('loginData');
     let d = JSON.parse(value);
     let SelUrl = await AsyncStorage.getItem('url');
-    await apiCall(SelUrl+Url.API.GET_RESOURES + 'agencyId=' + d.Item.agencyId, 'get', null).then((response) => {
+    await apiCall(SelUrl + Url.API.GET_RESOURES + 'agencyId=' + d.Item.agencyId, 'get', null).then((response) => {
       // console.log(response.Item.safetyPlaceTypes)
       if (response.Valid) {
         this.setState({ safetyPlaces: response.Item.safetyPlaceTypes })
@@ -359,7 +363,7 @@ class FourQuarts extends React.Component {
     let location = await Location.getCurrentPositionAsync({ accuracy: 5 });
     console.log(this.state.safetyPlaces, 'SAFETY PLACES')
     let place = this.state.safetyPlaces.join(",");
-    console.log(place, 'SAFETY PLACES') 
+    console.log(place, 'SAFETY PLACES')
     const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${location.coords.latitude},${location.coords.longitude}`;
     const label = 'Custom Label';
@@ -372,9 +376,9 @@ class FourQuarts extends React.Component {
     // Linking.openURL();
     // Linking.openURL(`https://www.google.com/maps/dir/?api=1&origin=Space+Needle+Seattle+WA&destination=Pike+Place+Market+Seattle+WA&travelmode=bicycling`);
   };
-  changeLayout =async (event) =>{
-    let {height} = event.nativeEvent.layout
-    this.setState({height:height});
+  changeLayout = async (event) => {
+    let { height } = event.nativeEvent.layout
+    this.setState({ height: height });
   }
   render() {
     let d = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString();
@@ -403,50 +407,62 @@ class FourQuarts extends React.Component {
 
             </View>
 
-            <View  onLayout={(event) => {
+            <View onLayout={(event) => {
               this.changeLayout(event)
-}} style={[style.innerBlocks, { borderRightColor: 'lightgrey', borderRightWidth: 2, paddingBottom: 35 }]}>
+            }} style={[style.innerBlocks, { borderRightColor: 'lightgrey', borderRightWidth: 2, paddingBottom: 35 }]}>
               {this.state.nothreats === true && (
                 <TouchableOpacity activeOpacity={0.5} onPress={this.callFun}  >
-                  <FontAwesome name="check" size={100} backgroundColor="#3b5998"  >
-                  </FontAwesome>
+                  {/* <FontAwesome name="check" size={100} backgroundColor="#3b5998"  >
+                  </FontAwesome> */}
+                  <Image
+                    style={{ width: 100, height: 90 }}
+                    source={require('../assets/nothreat.png')}
+                  // source={require('../assets/danger_exit.png')}  
+                  // source={require('../assets/alert.png')}                   
+                  />
                 </TouchableOpacity>
 
               )}
               {this.state.nothreats === true && (
                 <View>
-                  <Text style={{textAlign:"center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
+                  <Text style={{ textAlign: "center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
                 </View>
               )}
               {this.state.attention === true && (
                 <TouchableOpacity activeOpacity={0.5} onPress={this.callFun} >
-
-                  <FontAwesome name="exclamation-triangle" size={100} backgroundColor="#3b5998"  >
-                  </FontAwesome>
+                  <Image
+                    style={{ width: 100, height: 90 }}
+                    source={require('../assets/alert.png')}
+                  />
+                  {/* <FontAwesome name="exclamation-triangle" size={100} backgroundColor="#3b5998"  >
+                  </FontAwesome> */}
                 </TouchableOpacity>
               )}
               {this.state.attention === true && (
                 <View >
-                  <Text style={{textAlign:"center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
+                  <Text style={{ textAlign: "center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
                 </View>
               )}
               {this.state.danger === true && (
                 <TouchableOpacity activeOpacity={0.5} onPress={this.callFun}  >
 
-
-                  <FontAwesome name="exclamation-triangle" size={100} backgroundColor="#3b5998"  >
-                  </FontAwesome>
+                  <Image
+                    style={{ width: 100, height: 90 }}
+                    source={require('../assets/danger_exit.png')}
+                  />
+                  {/* <FontAwesome name="exclamation-triangle" size={100} backgroundColor="#3b5998"  >
+                  </FontAwesome> */}
                 </TouchableOpacity>
               )}
               {this.state.danger === true && (
                 <View>
-                  <Text style={{textAlign:"center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
+                  <Text style={{ textAlign: "center", alignSelf: "center", fontSize: 16, fontWeight: "bold" }}>{this.state.type}</Text>
                 </View>
               )}
-              <Text style={{ alignSelf: "center", fontSize: 10, fontWeight: "bold" ,marginTop:'8%' }}>{d}</Text>
+              <Text style={{ alignSelf: "center", fontSize: 10, fontWeight: "bold", marginTop: '8%' }}>{d}</Text>
             </View>
 
-            <View style={[style.innerBlocks, { height:this.state.height, borderLeftColor: 'lightgrey', borderLeftWidth: 2, paddingBottom: 35 }]}>
+            <View style={[style.innerBlocks, { height: this.state.height, borderLeftColor: 'lightgrey', borderLeftWidth: 2, paddingBottom: 35 }]}>
               <TouchableOpacity activeOpacity={0.5} onPress={this.get_LatandLang}>
 
                 {/* <FontAwesome name="sliders" size={100} backgroundColor="#3b5998"  >
@@ -505,7 +521,7 @@ class FourQuarts extends React.Component {
                   <View style={style.modalBackground}>
                     <View style={style.modelContent}>
                       <View style={{ backgroundColor: "0061a7", color: "#fff", paddingTop: 8, paddingLeft: 8 }}>
-                          {/* <Text>Panic Message</Text> */}
+                        {/* <Text>Panic Message</Text> */}
                       </View>
                       <View style={{ padding: 12 }}>
                         <Text numberOfLines={4}> If you need immediate assistance and facing a life threatening situation, please call 911.
@@ -522,7 +538,7 @@ class FourQuarts extends React.Component {
               </TouchableOpacity>
             </View>
             <View style={style.bottomView}>
-            <Text style={{ color: "#fff" }}>Ver 1.7 @ TRACKtech {year}</Text>
+              <Text style={{ color: "#fff" }}>Ver 1.7 @ TRACKtech {year}</Text>
             </View>
           </View>
 

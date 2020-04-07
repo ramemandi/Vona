@@ -205,6 +205,23 @@ if (!TaskManager.isTaskDefined(LOCATION_TASK_NAME)) {
       console.log(data, '205');
 
       // await fetch(Selurl+Url.API.VONA_MEMBER_STATUS, {
+        // console.log(JSON.stringify({
+        //   VONAId: vonaid,
+        //   pmId: pmId,
+        //   VONAUserType: vonaUserType,
+        //   latitude: data.locations[0].coords.latitude,
+        //   longitude: data.locations[0].coords.longitude,
+        //   //latitude:test[0],
+        //   //longitude:test[1],  
+        //   accuracy: data.locations[0].coords.accuracy,
+        //   heading: data.locations[0].coords.heading,
+        //   altitude: data.locations[0].coords.altitude,
+        //   speed: data.locations[0].coords.speed,
+        //   status: null,
+        //   VONAInviteCode: secureId,
+        //   VONAUserDateTime: dateTime
+        // }),'BODY DATA');
+        
       await fetch(SelUrl + Url.API.VONA_MEMBER_STATUS, {
         method: 'POST',
         headers: {
@@ -230,7 +247,7 @@ if (!TaskManager.isTaskDefined(LOCATION_TASK_NAME)) {
       }).then(response => response.json())
         .then(async (responseJson) => {
           // var prev_Alert = await AsyncStorage.getItem('alertType',(err)=>{console.log(err)});
-          // console.log(responseJson, 'responseJson');
+           console.log(responseJson, 'responseJson');
 
           // console.log(prev_Alert,'prevAlert');
           // console.log(responseJson.Item.thresholdMessage,'responseJson.Item.thresholdMessage');
