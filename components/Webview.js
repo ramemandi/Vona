@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Button, WebView } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import * as  Constants  from 'expo-constants';
+import { WebView } from 'react-native-webview';
 
 
-export default class WebViewPage extends Component {
+export default class WebViewPage extends React.Component {
 
     state = {
         showWebView: false,

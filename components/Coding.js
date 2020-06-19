@@ -11,7 +11,7 @@ class Coding extends React.Component {
             oddOne : null
          } 
     }
-    componentWillMount(){
+    UNSAFE_componentWillMount(){
         this.divideNconquer();
     }
 

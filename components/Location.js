@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Platform, Text, View, StyleSheet,TouchableOpacity } from 'react-native';
-import {  Location, Permissions,TaskManager  } from 'expo';
+import {  Location, Permissions  } from 'expo';
 import * as Constants from 'expo-constants';
 export const LOCATION_TASK_NAME = 'background-location-updates'
 
@@ -43,7 +43,7 @@ export default class CurrentLocation extends Component {
     //   accuracy: Location.Accuracy.Balanced   
     // })
   }
-  componentWillMount = async ()=> {
+  UNSAFE_componentWillMount = async ()=> {
     console.log(Platform.OS,Constants.isDevice, 'componentWillMount');
  
     if (Platform.OS === 'android' && !Constants.isDevice) {

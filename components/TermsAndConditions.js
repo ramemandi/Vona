@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, AsyncStorage, Modal, ActivityIndicator, ScrollView, Dimensions, TouchableOpacity, StyleSheet, Image, } from 'react-native';
+import { View, Text, Platform, AsyncStorage, Modal, ActivityIndicator, ScrollView, Dimensions, TouchableOpacity, StyleSheet, Image,Alert } from 'react-native';
 import { Notifications } from 'expo';
 import Constants from 'expo-constants'
 import * as Location from 'expo-location'
 // import {createStackNavigator,createAppContainer,NavigationActions } from 'react-navigation';
 import * as Permissions from 'expo-permissions'
 import HTMLView from 'react-native-htmlview';
-import { callTaskManager } from './Auth'; 
+// import { callTaskManager } from './Auth';
 import Url from '../components/Urls';
 import { apiCall } from '../components/FourQuarts.Service';
-
-// import firebase from 'firebase';
-// const firebaseConfig = {
-// apiKey:"AIzaSyA8Fabx1XtDKkHyDcIwqnv5PRCHd4EhWxU", //"<YOUR-API-KEY>",
-// // authDomain:"https://vona-react-6ba1f.firebaseapp.com",//"vona-fcb2a.firebaseapp.com", //"<YOUR-AUTH-DOMAIN>",
-//  databaseURL: "https://vona-react-6ba1f.firebaseio.com/",
-// //"<YOUR-DATABASE-URL>",
-// //storageBucket: "vona-fcb2a.appspot.com"//"<YOUR-STORAGE-BUCKET>"
-// }
+import messaging from '@react-native-firebase/messaging';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+ 
 const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
   return layoutMeasurement.height + contentOffset.y >=
@@ -27,8 +22,8 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 class TermsAndConditions extends Component {
   static navigationOptions = ({ navigation, screenProps }) => ({
     //  headerLeft: <BackTitle />,
-    headerRight: <Text style={{ marginRight: 10 }}>Welcome {navigation.state.params.name} </Text>,
-    headerTitle: (<Image style={{ width: 35, height: 35, alignItems: 'flex-start', padding: 0 }} resizeMode="contain" source={{uri:navigation.state.params.icon}} />
+    headerRight: <Text style={{ marginRight: 10,color:"black" }}>Welcome {navigation.state.params.name} </Text>,
+    headerTitle: (<Image style={{ width: 35, height: 35, alignItems: 'flex-start', padding: 0 }} resizeMode="contain" source={{ uri: navigation.state.params.icon }} />
     ),
     title: null
   });
@@ -41,18 +36,20 @@ class TermsAndConditions extends Component {
       loading: true,
       terms: '',
       VONAId: null,
-      pmId: null
+      pmId: null,
+      token : null
     }
     // if (!firebase.apps.length) {
     // firebase.initializeApp(firebaseConfig);
     // }
   }
-  componentWillMount = async () => {
+  UNSAFE_componentWillMount = async () => {
     try {
-      const value = await AsyncStorage.getItem('loginData')
+      const value = await AsyncStorage.getItem('loginData');
+      console.log(value,'loginData');
       if (value !== null) {
         let d = JSON.parse(value);
-         this.setState({
+        this.setState({
           terms: d.Item.terms,
           VONAId: d.Item.VONAId,
           pmId: d.Item.pmId,
@@ -65,37 +62,96 @@ class TermsAndConditions extends Component {
 
 
   }
+  
+  _showAlert = async (token) => {
+    let t = JSON.stringify(token)
+    Alert.alert(
+      'Aviso',
+      '¿Desea cerrar la sesion?',
+      [
+        {text: t, onPress: () => alert('Ask me later pressed')},
+        {text: 'Cancel', onPress: () => alert('Cancel Pressed'), style: 'cancel'},
+      ],
+      { cancelable: false }
+    )
+  }
+
+  getFcm = async () => {
+    console.log('fcm method called')
+    messaging()
+    .getToken()
+    .then(token => {
+      console.log('Rambabu', token)
+      this.setState({token:token});
+      AsyncStorage.setItem('fcmToken',token);
+     return this.saveTokenToDatabase(token);
+    });
+    
+  }
+   
+  saveTokenToDatabase = async (token) => {
+    // Assume user is already signed in
+    const userId = auth().currentUser.uid;
+    console.log('userId', userId);
+    // Add the token to the users datastore
+    await firestore()
+      .collection('users')
+      .doc(userId)
+      .update({
+        tokens: firestore.FieldValue.arrayUnion(token),
+      });
+  }
   agree_Tnc = async () => {
-    this.setState({
-      loading: true
-    })
+
     let token = null;
-    try {
-      token = await Notifications.getExpoPushTokenAsync();
-      console.log(token,'getExpoPushTokenAsync')
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        loading: false
-      })
-
-    }
-    const { status: existingStatus } = await Permissions.getAsync(
-      Permissions.NOTIFICATIONS
-    );
-
-    let finalStatus = existingStatus;
     const secureId = await AsyncStorage.getItem('secureId')
-    if (existingStatus !== 'granted') {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      finalStatus = status;
+
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      console.log(finalStatus, 89)
+      // token = await Notifications.getExpoPushTokenAsync(); 
+      // console.log(token,81);
+      try {
+        console.log('before token');
+        const deviceToken = await AsyncStorage.getItem('fcmToken')
+        if(deviceToken !=null){
+          console.log('fetching the deviceToken from local storage')
+          this.setState({token:deviceToken})
+        }else {
+          console.log('gets the devices token from firebase');
+          let fcm = this.getFcm();
+          console.log('rambabu fcm',fcm);
+        }
+        // token = await Notifications.getExpoPushTokenAsync();
+        // let config = {gcmSenderId:"vona-a1037"}
+        // token = await Notifications.getDevicePushTokenAsync(config);
+        // this._showAlert(token);
+        // console.log('GCM Token:', token, 'rambabu');
+      } catch (err) {
+        console.log('token error block');
+
+        // alert("Error", err)
+        // this._showAlert(err);
+        console.log("Error", err);
+      }
+      // this.setState({ expoPushToken: token });
+    } else {
+      alert('Must use physical device for Push Notifications');
     }
-    // Stop here if the user did not grant permissions
-    if (finalStatus !== 'granted') {
-      alert(finalStatus);
-      return;
+    if (this.state.token == null) {
+      this.setState({
+        loading: true
+      })
     }
-    // Get the token that uniquely identifies this device
 
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
@@ -111,49 +167,41 @@ class TermsAndConditions extends Component {
         });
       }
       // this.props.navigation.navigate('Root');  
- //http://devapi.tracktechllc.com/tracktech/api/PMAccountProfile/AcceptVONATC
+      //http://devapi.tracktechllc.com/tracktech/api/PMAccountProfile/AcceptVONATC
       let location = await Location.getCurrentPositionAsync({ accuracy: 5 });
-         console.log(JSON.stringify({
-          VONAId: this.state.VONAId,
-          pmId: this.state.pmId,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          accuracy: location.coords.accuracy,
-          heading: location.coords.heading,
-          altitude: location.coords.altitude,
-          speed: location.coords.speed,
-          VONAInviteCode: secureId,
-          deviceToken: token
-        }),'TERMS');
-        let SelUrl = await AsyncStorage.getItem('url');
-        let body=JSON.stringify({
-          VONAId: this.state.VONAId,
-          pmId: this.state.pmId,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          accuracy: location.coords.accuracy,
-          heading: location.coords.heading,
-          altitude: location.coords.altitude,
-          speed: location.coords.speed,
-          VONAInviteCode: secureId,
-          deviceToken: token
-        });
-      
-      await apiCall(SelUrl+Url.API.TERMS_CONDITIONS,'post',body) 
+      let SelUrl = await AsyncStorage.getItem('url');
+      let body = JSON.stringify({
+        VONAId: this.state.VONAId,
+        pmId: this.state.pmId,
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        accuracy: location.coords.accuracy,
+        heading: location.coords.heading,
+        altitude: location.coords.altitude,
+        speed: location.coords.speed,
+        VONAInviteCode: secureId,
+        deviceToken: this.state.token
+      });
+
+      if(this.state.token != null){
+      await apiCall(SelUrl + Url.API.TERMS_CONDITIONS, 'post', body)
         .then((responseJson) => {
-          if(responseJson.Valid){
+          if (responseJson.Valid) {
             this.setState({
               loading: false
             })
             AsyncStorage.setItem('TC', JSON.stringify(responseJson), () => { });
             this.props.navigation.navigate('Active');
-           }else {
+          } else {
             console.log(responseJson, 'DEVICE TOKEN');
-           }
+          }
         })
         .catch(error => {
           console.log(error);
         });
+      } else {
+        this.props.navigation.navigate('HomeScreen');
+      }
     }
   };
 
@@ -207,7 +255,8 @@ const styles = {
     // height: Dimensions.get('window').height,
   },
   title: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color:'black'
   },
   tcL: {
     marginLeft: 10,

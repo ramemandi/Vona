@@ -36,22 +36,23 @@ export default class Resources extends React.Component {
         });
     }
     loadWebView = (url) => {
+        console.log(url,'RAM LR')
         this.props.navigation.navigate('webView', { url: url })
     }
 
 
-    render() {
-        return (
-            <View style={styles.container}>
-                {this.state.showWebView && this.renderContent()}
-                <Button
-                    style={styles.paragraph}
-                    title="Login"
-                    onPress={() => this.setState({ showWebView: true })}
-                />
-            </View>
-        );
-    }
+    // render() {
+    //     return (
+    //         <View style={styles.container}>
+    //             {this.state.showWebView && this.renderContent()}
+    //             <Button
+    //                 style={styles.paragraph}
+    //                 title="Login"
+    //                 onPress={() => this.setState({ showWebView: true })}
+    //             />
+    //         </View>
+    //     );
+    // }
     render() {
 
         return (

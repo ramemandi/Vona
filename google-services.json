@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "675207484058",
+    "firebase_url": "https://vona-a1037.firebaseio.com",
+    "project_id": "vona-a1037",
+    "storage_bucket": "vona-a1037.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675207484058:android:4c2363bfdaacc437ad4523",
+        "android_client_info": {
+          "package_name": "com.tracktechllc.vona"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675207484058-pi2hk7t7vcgkhv2t2aj0j1l9g5mem5qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHcmMFDDJmpvPqulEui5lAVzgSxHtXHjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675207484058-pi2hk7t7vcgkhv2t2aj0j1l9g5mem5qp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -176,7 +176,7 @@ class PanicOptions extends React.Component {
                                 {/* {(index == 1) && (<View style={{ width: '70%' }}><Text style={{ fontSize: 18 }}>{index + 1}.Option - {index + 1}</Text></View>)}
                                 {(index == 2) && (<View style={{ width: '70%' }}><Text style={{ fontSize: 18 }}>{index + 1}.Option - {index + 1}</Text></View>)}
                                 <View style={{ width: '25%' }}> */}
-                                <View style={{ width: '90%' }}><Text style={{ fontSize: 18 }}>{option.value} </Text></View>
+                                <View style={{ width: '90%' }}><Text style={{ fontSize: 18 , color:'black' }}>{option.value} </Text></View>
                                 <View style={{ width: '10%' }}>
                                     <RadioButton
                                         value="first"

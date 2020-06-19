@@ -18,7 +18,7 @@ import { apiCall } from '../components/FourQuarts.Service';
 class Lazyload extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props)
+    // console.log(props)
     this.state = {
       loading: true,
       //Loading state used while loading the data for the first time
@@ -127,10 +127,12 @@ class Lazyload extends React.Component {
               keyExtractor={(item, index) => index.toString()}
               data={this.state.serverData}
               renderItem={({ item, index }) => (
-                <ListItem
+                <ListItem 
                   leftAvatar
                   title={item.address}
-                  subtitle={item.VONAUserDateTime}
+                  subtitle={<View style={styles.subtitle}>
+                  <Text>{item.VONAUserDateTime}</Text>
+                  </View>}
                 />
 
               )}
@@ -183,5 +185,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
   },
+  subtitle:{
+    color:'black'
+  }
 });
 export default Lazyload;

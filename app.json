@@ -4,7 +4,6 @@
     "description": "No description",
     "slug": "VONA",
     "privacy": "unlisted",
-    "sdkVersion": "35.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#cccccc",
@@ -34,11 +33,14 @@
     },
     "android": {
       "package": "com.tracktechllc.vona",
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDfYcLWG86Q9RiOAtZE4ANFmJatlN5hrB4"
         }
-      }
+      },
+      "publishBundlePath": "android\\app\\src\\main\\assets\\shell-app.bundle",
+      "publishManifestPath": "android\\app\\src\\main\\assets\\shell-app-manifest.json"
     },
     "splash": {
       "image": "./assets/icons/finalpng.png",
@@ -48,6 +50,8 @@
     "platforms": [
       "android",
       "ios"
-    ]
+    ],
+    "entryPoint": "node_modules/expo/AppEntry.js",
+    "scheme": "expe79301df4a6440bda53e416548fe679a"
   }
 }

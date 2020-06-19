@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Alert, NetInfo, Platform } from "react-native";
+import { Alert, Platform } from "react-native";
+import { NetInfo } from "react-native-netinfo";
  
 export const CheckConnectivity = () => {
     // For Android devices

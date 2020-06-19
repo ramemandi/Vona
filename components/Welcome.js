@@ -82,13 +82,13 @@ class Welcome extends React.Component {
                 /> */}
             </View>
             <View style={[style.child], { width: '100%', alignSelf: "center" }}>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: "center" }} >
+              <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: "center",color:"black" }} >
                 Welcome {this.state.displayName}
                 {'\n'}
                 {'\n'}
               </Text>
               <Image style={{ alignSelf: "center" }} source={require('../assets/green.jpg')} />
-              <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: "center" }}>{'\n'}{'\n'}{'\n'}To continue press start
+              <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: "center",color:"black" }}>{'\n'}{'\n'}{'\n'}To continue press start
                {'\n'}{'\n'}
               </Text>
               <View style={{ width: 100, height: 50, alignSelf: "center" }}>

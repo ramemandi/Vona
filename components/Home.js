@@ -19,7 +19,6 @@ import { urlSelection } from '../components/Urls';
 import Url from '../components/Urls';
 import { apiCall } from '../components/FourQuarts.Service';
 import { isSignedIn } from './Auth';
-import { connect } from 'react-redux';
 import * as FileSystem from 'expo-file-system';
 
 const keyboardVerticalOffset = Platform.OS === 'ios' ? 10 : 8
@@ -49,7 +48,7 @@ class Home extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
         errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
@@ -61,7 +60,6 @@ class Home extends React.Component {
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
-
     if (status !== 'granted') {
       this.setState({
         errorMessage: 'Permission to access location was denied',
@@ -162,17 +160,17 @@ class Home extends React.Component {
   }
 
   componentDidMount = async () => {
-    try {
-      await isSignedIn().then((res) => {
-        //   console.log(res, 'dddddddd')
-        if (res) {
-          //    console.log(res, 'dddddddd')
-          this.props.navigation.navigate("Active");
-        }
-      }).catch((err) => { console.log(err, 'custome error') })
-    } catch (error) {
-      console.log(error)
-    }
+    // try {
+    //   await isSignedIn().then((res) => {
+    //     //   console.log(res, 'dddddddd')
+    //     if (res) {
+    //       //    console.log(res, 'dddddddd')
+    //       this.props.navigation.navigate("Active");
+    //     }
+    //   }).catch((err) => { console.log(err, 'custome error') })
+    // } catch (error) {
+    //   console.log(error)
+    // }
 
   }
 
@@ -196,7 +194,6 @@ class Home extends React.Component {
       // console.log(this.state.secureId, ' this.state.previousScandata');
       this.validate(this.state.secureId)
     } else {
-
       AsyncStorage.getItem('QR_DATA', (error, results) => {
         console.log(JSON.parse(results), '_handleBarCodeRead');
         console.log(result.data)
@@ -206,9 +203,8 @@ class Home extends React.Component {
           // this._maybeRenderUrl();  
         }
       })
-      this.validate()
+      this.validate();
     }
-
   };
 
 
@@ -271,7 +267,7 @@ class Home extends React.Component {
       <View style={styles.container}>
         <Image source={require('../assets/tracktech1.png')} />
         <Text style={styles.paragraph}>
-          {'\n'} ENTER YOUR SECURE CODE {'\n'}BELOW TO GET
+          {'\n'}ENTER YOUR SECURE CODE {'\n'}BELOW TO GET
           {'\n'}STARTED
         </Text>
         <KeyboardAvoidingView behavior="position" enabled="true" keyboardVerticalOffset={keyboardVerticalOffset}>
@@ -287,7 +283,7 @@ class Home extends React.Component {
           />
         </KeyboardAvoidingView>
 
-        <View style={{ width: 100, height: 50 }}>
+        {/* <View style={{ width: 100, height: 50 }}>
           <Button
             onPress={() => this._requestCameraPermission()}
             title={!this.state.requestedQr ? ' SCAN QR ' : 'CLOSE QR'}
@@ -304,7 +300,7 @@ class Home extends React.Component {
                 width: "100%",
               }}
             />
-          )}
+          )} */}
         {this._maybeRenderUrl()}
         {this.renderMsg()}
       </View>
@@ -337,6 +333,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    color:"black"
   },
   logo: {
     height: 75,
@@ -344,7 +341,7 @@ const styles = StyleSheet.create({
   },
   TextInputStyle: {
     textAlign: 'center',
-    height: 35,
+    height: 40,
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#0061a7',

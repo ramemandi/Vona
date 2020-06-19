@@ -17,7 +17,7 @@ export const urlSelection = (value) => {
                     reject(result)
                 }
             } else if (value.toLocaleLowerCase().search('demo') === 0) {
-                url = ' https://demo-api.tracktechllc.com/';  
+                url = 'https://demo-api.tracktechllc.com/';  
                 let result =  await selectedUrl(url)
                 if (result) {
                     return resolve(url)
@@ -34,8 +34,8 @@ export const urlSelection = (value) => {
                     reject(result)
                 }
             } else {
-                url = 'http://devapi.tracktechllc.com/tracktech/';
-                // url = https://api.tracktechllc.com/
+                // url = 'http://devapi.tracktechllc.com/tracktech/';
+                url = 'https://api.tracktechllc.com/'
                 let result =  await selectedUrl(url)
                 if (result) {
                     return resolve(url)
@@ -58,16 +58,6 @@ let urls = AsyncStorage.setItem('url',url);
 
 
 export default class Url {
-        //  that = this;
-    // url = 'https://beta-api.tracktechllc.com/';
-    //  static url = 'http://devapi.tracktechllc.com/tracktech/';
-    //  static url = 'https://beta-api.tracktechllc.com/';
-    // static currentUrl;
-    // constructor(){
-        // that.currentUrl = (async()=>{await(AsyncStorage.getItem('url'))?this.url = await AsyncStorage.getItem('url'):this.url='http://test/com';})
- 
-    // }
-    
     
     static API = {
         LOGIN: 'api/PMAccountProfile/VerifyVONARandomCode?',
