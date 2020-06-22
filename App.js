@@ -39,6 +39,8 @@ import * as Permissions from 'expo-permissions';
 import BackgroundJob from 'react-native-background-actions';
 import RNLocation from "react-native-location";
 import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+SplashScreen.preventAutoHideAsync();
 
 const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 //  https://beta-api.tracktechllc.com/api/PMAccountProfile/LogVONAMemberStatus
@@ -199,8 +201,6 @@ const taskRandom = async taskData => {
       console.log(ret,'postData returned')
       await sleep(delay);
         // locationSubscription() 
-        
-
     }
   });
 };
@@ -220,7 +220,7 @@ export const toggleBackground = async () => {
         android: "balancedPowerAccuracy"
       },
       // Android only
-      androidProvider: "playServices",
+      androidProvider: "auto",
       interval: 90000, // Milliseconds
       fastestInterval: 60000, // Milliseconds
       // maxWaitTime: 30000
@@ -242,6 +242,7 @@ export const toggleBackground = async () => {
         console.log('location permission granted by RNLocation');
       }
     });
+
     await BackgroundJob.start(taskRandom, options);
     //  await taskRandom(options);
     console.log('Successful start!');
@@ -351,12 +352,13 @@ export default class App extends React.Component {
   // playing = BackgroundJob.isRunning();
 
   /**
-   * Toggles the background task
+   * Toggles tlhe background task
    */
 
   componentDidMount = async () => {
     //console.log(AppState.currentState, 'current stats'); 
     //AsyncStorage.clear();'./assets/fonts/open-sans/OpenSans-Bold.ttf'
+    setTimeout(() => SplashScreen.hideAsync(), 2000);
     await Font.loadAsync({
       'open-sans-bold': require('./assets/fonts/open-sans/OpenSans-Bold.ttf')
     });

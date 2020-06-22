@@ -34,6 +34,12 @@
     "android": {
       "package": "com.tracktechllc.vona",
       "googleServicesFile": "./google-services.json",
+      "icon": "./assets/icons/icon.png",
+      "splash": {
+        "image": "./assets/icons/finalpng.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#ededed"
+      },
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyDfYcLWG86Q9RiOAtZE4ANFmJatlN5hrB4"
