@@ -208,7 +208,10 @@ const taskRandom = async taskData => {
 export const toggleBackground = async () => {
   console.log('playing');
   console.log('remove RNLocation configs');
+  console.log('temp running');
 
+  let running = BackgroundJob.isRunning();
+  console.log(running,'running');
   // this.playing = !this.playing;
   // if (this.playing) {
   try {
@@ -243,7 +246,11 @@ export const toggleBackground = async () => {
       }
     });
 
-    await BackgroundJob.start(taskRandom, options);
+    if(running){
+      console.log('Background job is already running');
+    }else {
+      await BackgroundJob.start(taskRandom, options);
+    }
     //  await taskRandom(options);
     console.log('Successful start!');
   } catch (e) {
